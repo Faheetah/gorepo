@@ -2,7 +2,6 @@ package gorepo
 
 import (
 	"fmt"
-	"os"
 	_ "testing"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -20,14 +19,12 @@ func ExampleQuery() {
 	q, err := repo.Filter(&example).Distinct().Count().Build()
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
 	}
 	fmt.Println(q.Statement)
 
 	q, err = repo.Filter(&example).Select("id", "name").Where("name", LIKE, "$1", "bar").Limit(5).OrderBy("name", ASC).Build()
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
 	}
 	fmt.Println(q.Statement)
 	fmt.Println("bindings:", q.Binds)

@@ -2,7 +2,9 @@ package gorepo
 
 import (
 	"database/sql"
+	"fmt"
 	"reflect"
+	"strings"
 )
 
 type Repo struct {
@@ -30,7 +32,26 @@ func (repo *Repo) Get(iface *interface{}) error {
 }
 
 // Insert a record into the database
-func (repo *Repo) Insert(iface *interface{}) error {
+func (repo *Repo) Insert(iface interface{}) error {
+	t := reflect.TypeOf(iface).Elem()
+	v := reflect.ValueOf(iface).Elem()
+	tableName := structToTableName(t.Name())
+	var columns []string
+	var values []string
+
+	for i := 0; i < v.NumField(); i++ {
+		columns = append(columns, structToTableName(t.Field(i).Name))
+		f := v.Field(i)
+		switch f.Interface().(type) {
+		case string:
+			values = append(values, fmt.Sprintf("'%v'", f))
+		default:
+			values = append(values, fmt.Sprintf("%v", f))
+		}
+	}
+
+	statement := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s);", tableName, strings.Join(columns, ", "), strings.Join(values, ", "))
+	fmt.Println(statement)
 	return nil
 }
 
