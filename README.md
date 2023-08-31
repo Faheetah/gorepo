@@ -1,3 +1,5 @@
+# WARNING: This project is a work in progress and is experimental in nature.
+
 You create your own repo struct via function, this becomes a *Repo object from the method return. The values could come from code or environment vars or config handling or whatever.
 
 ```go
